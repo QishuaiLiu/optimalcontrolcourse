@@ -41,7 +41,7 @@ the transition map $f_{dis}(x_k, u_k)$ is usually not given as an explicit expre
 
 ## 1.3 Discrete time systems
 consider the system with dynamics:
-$$x_{k + 1} = f_k(x_k， u_k), k = 0, 1, \ldots, N - 1$$
+$$x_{k + 1} = f_k(x_k， u_k), k = 0, 1, \ldots, N - 1 \tag{1.3}$$
 
 on a time horizon of length $N$, with $N$ control input vectors $u_0, \ldots, u_{N-1}\in\mathbb{R}^{n_u}$ and ($N + 1$) state vectors $x_0, \ldots, x_N\in \mathbb{R}^{n_x}$.
 
@@ -49,7 +49,48 @@ if we know the inital state and all control input, we can obtain all other state
 
 the forward simulation is the map:
 
-$$f_sim: \mathbb{R}^{n_x + Nn_u} \to \mathbb{R}^{(N+ 1)n_x}, (x_0; u_0,\ldots, u_{N-1})\to (x_0,x_1,\ldots, x_N)$$
+$$f_sim: \mathbb{R}^{n_x + Nn_u} \to \mathbb{R}^{(N+ 1)n_x}, (x_0; u_0,\ldots, u_{N-1})\to (x_0,x_1,\ldots, x_N) $$ 
 
 by solving the equation recursively for all $k = 0, 1, \ldots, N - 1$.
 
+(1.3) 是dynamical optimization problem的核心问。 有没有初始值的约束不重要。
+
+### Linear time invariant(LTI) system
+
+In discrete time case, the  linear time invariant system is given:
+$$x_{k + 1} = Ax_k + Bu_k, k = 0, 1,\ldots, N - 1$$
+
+with fixed matrices $A^{n_x \times n_x}$ and $B\in\mathbb{R}^{n_x \times n_u}$.
+
+Stable and asymptotically stable is same as general control course.
+
+the forward simulation map for this system on a horizon with length N is given:
+
+$\left[\begin{matrix} x_0\\ x_1 \\ x_2 \\ \vdots \\ x_N \end{matrix}\right]$  = $\left[\begin{matrix} x_0\\ Ax_0 + Bu_0 \\A^2x_0 + ABu_0 + Bu_1  \\ \vdots \\ A^Nx_0 + \sum_{k = 0}^{N - 1}A^{N - 1- k}Bu_k  \end{matrix}\right]$
+
+
+### Affine system and linearizations along trajectory
+
+affine time-varying system:
+$$x_{k + 1} = A_k x_k + B_k u_k + c_k, k = 0, 1, \cdots, N - 1 \tag{1.4}$$
+
+These often as linearization of nonlinear dynamic systems along a given reference trajectory. 
+
+For some nonlinear system, the Taylor expansion of each function $f_k$ at the reference value $(\bar x_{k}, \bar u_{k})$ is given by:
+
+$$(x_{k + 1} - \bar x_{k + 1}) \approx \frac{\partial f_k}{\partial x}(x_k, u_k)(x_k - \bar x_k) + \frac{\partial f_k}{\partial u}(x_k, u_k)(u_k - \bar u_k) + (f_k(\bar x_k, \bar u_k) - \bar x_{k + 1})$$
+
+and this is the 1.4.
+
+The simulation map of the affine system 1.4 is an affine function of the initial value and the controls. This affine map is for any $N \in \mathbb{N}$ given by:
+$$x_N = (A_{N - 1}\cdots A_0)x_0 + \sum_{k = 0}^{N  - 1} (\prod_{j = k + 1}^{N - 1}A_j)(B_ku_k + c_k)$$
+
+### 1.4 optimization problem classes
+
+Discrete time optimal control problems fall into the first and continuous time optimal control problems into the second class. (e.g. finite or infinite dimensional optimization.)
+
+If an inifinte number of inequality constraints while the decision variables is finite, it is called **semi-infinite optimization** problem, naturally arises in the context of **robust optimization.**
+
+### convex and nonconvex optimization
+
+convex optimization is a subclass of the continuous optimization problems and arise if the objective function is a convex function and the set of feasible points a convex set.
